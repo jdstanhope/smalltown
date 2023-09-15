@@ -1,12 +1,23 @@
 package main
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 )
 
 func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
-	_, _ = fmt.Fprintln(w, "status: available")
-	_, _ = fmt.Fprintf(w, "environment: %s\n", app.config.env)
-	_, _ = fmt.Fprintf(w, "version: %s\n", version)
+	data := map[string]string{
+		"status":      "available",
+		"environment": app.config.env,
+		"version":     version,
+	}
+	js, err := json.Marshal(data)
+	if err != nil {
+		app.logger.Error(err.Error())
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write(js)
 }
