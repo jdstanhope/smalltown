@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (app *application) createPhotoHandler(writer http.ResponseWriter, request *http.Request) {
+func (app *application) createPhotoHandler(writer http.ResponseWriter, _ *http.Request) {
 	_, _ = fmt.Fprintln(writer, "upload a new photo")
 }
 
@@ -26,7 +26,7 @@ func (app *application) showPhotoHandler(writer http.ResponseWriter, request *ht
 		UserID:     1,
 	}
 
-	err = app.writeJSON(writer, http.StatusOK, photo, nil)
+	err = app.writeJSON(writer, http.StatusOK, photo, "photo", nil)
 	if err != nil {
 		app.logger.Error(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)

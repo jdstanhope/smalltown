@@ -17,8 +17,9 @@ func (app *application) readIDParam(r *http.Request) (int64, error) {
 	return id, nil
 }
 
-func (app *application) writeJSON(w http.ResponseWriter, status int, data any, headers http.Header) error {
-	js, err := json.Marshal(data)
+func (app *application) writeJSON(w http.ResponseWriter, status int, data any, rootName string, headers http.Header) error {
+	root := map[string]any{rootName: data}
+	js, err := json.Marshal(root)
 	if err != nil {
 		return err
 	}

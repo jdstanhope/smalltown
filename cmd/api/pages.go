@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (app *application) createPageHandler(writer http.ResponseWriter, request *http.Request) {
+func (app *application) createPageHandler(writer http.ResponseWriter, _ *http.Request) {
 	_, _ = fmt.Fprintln(writer, "creating a new page from a picture")
 }
 
@@ -26,7 +26,7 @@ func (app *application) showPageHandler(writer http.ResponseWriter, request *htt
 		StorageURL: "https://placekitten.com/320/320?image=5",
 		PhotoID:    1,
 	}
-	err = app.writeJSON(writer, http.StatusOK, page, nil)
+	err = app.writeJSON(writer, http.StatusOK, page, "page", nil)
 	if err != nil {
 		app.logger.Error(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
