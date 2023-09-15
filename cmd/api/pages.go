@@ -14,7 +14,7 @@ func (app *application) createPageHandler(writer http.ResponseWriter, _ *http.Re
 func (app *application) showPageHandler(writer http.ResponseWriter, request *http.Request) {
 	id, err := app.readIDParam(request)
 	if err != nil || id < 1 {
-		http.NotFound(writer, request)
+		app.notFoundResponse(writer, request)
 		return
 	}
 
@@ -28,7 +28,6 @@ func (app *application) showPageHandler(writer http.ResponseWriter, request *htt
 	}
 	err = app.writeJSON(writer, http.StatusOK, page, "page", nil)
 	if err != nil {
-		app.logger.Error(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		app.serverErrorResponse(writer, request, err)
 	}
 }

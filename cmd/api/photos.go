@@ -14,7 +14,7 @@ func (app *application) createPhotoHandler(writer http.ResponseWriter, _ *http.R
 func (app *application) showPhotoHandler(writer http.ResponseWriter, request *http.Request) {
 	id, err := app.readIDParam(request)
 	if err != nil || id < 1 {
-		http.NotFound(writer, request)
+		app.notFoundResponse(writer, request)
 		return
 	}
 
@@ -28,7 +28,6 @@ func (app *application) showPhotoHandler(writer http.ResponseWriter, request *ht
 
 	err = app.writeJSON(writer, http.StatusOK, photo, "photo", nil)
 	if err != nil {
-		app.logger.Error(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		app.serverErrorResponse(writer, request, err)
 	}
 }
