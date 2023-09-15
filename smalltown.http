@@ -1,0 +1,11 @@
+###
+GET http://localhost:{{port}}/v1/healthcheck
+
+###
+POST http://localhost:{{port}}/v1/pages
+
+###
+GET http://localhost:{{port}}/v1/pages/12
+
+###
+GET http://localhost:{{port}}/v1/pages/foobar
