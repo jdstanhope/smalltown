@@ -24,3 +24,23 @@ Content-Type: application/json
   "name": "foo"
 }
 
+###
+POST http://localhost:{{port}}/v1/pages
+Content-Type: application/json
+
+{
+  "name": "foo",
+  "name2": "foo"
+}
+
+###
+POST http://localhost:{{port}}/v1/pages
+Content-Type: application/json
+
+{
+  "name": "foo"
+}
+
+{
+  "name": "foo2"
+}
