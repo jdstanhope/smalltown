@@ -15,3 +15,12 @@ GET http://localhost:{{port}}/v1/photos/1
 
 ###
 PUT http://localhost:{{port}}/v1/photos/1
+
+###
+POST http://localhost:{{port}}/v1/pages
+Content-Type: application/json
+
+{
+  "name": "foo"
+}
+

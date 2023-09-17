@@ -7,8 +7,18 @@ import (
 	"time"
 )
 
-func (app *application) createPhotoHandler(writer http.ResponseWriter, _ *http.Request) {
-	_, _ = fmt.Fprintln(writer, "upload a new photo")
+func (app *application) createPhotoHandler(writer http.ResponseWriter, request *http.Request) {
+	var input struct {
+		Comment string `json:"comment"`
+	}
+
+	err := app.readJSON(writer, request, &input)
+	if err != nil {
+		app.badRequestResponse(writer, request, err)
+		return
+	}
+
+	_, _ = fmt.Fprintf(writer, "Got %+v\n\n", input)
 }
 
 func (app *application) showPhotoHandler(writer http.ResponseWriter, request *http.Request) {

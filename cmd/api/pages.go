@@ -7,8 +7,16 @@ import (
 	"time"
 )
 
-func (app *application) createPageHandler(writer http.ResponseWriter, _ *http.Request) {
-	_, _ = fmt.Fprintln(writer, "creating a new page from a picture")
+func (app *application) createPageHandler(writer http.ResponseWriter, request *http.Request) {
+	var input struct {
+		Name string `json:"name"`
+	}
+	err := app.readJSON(writer, request, &input)
+	if err != nil {
+		app.badRequestResponse(writer, request, err)
+		return
+	}
+	_, _ = fmt.Fprintf(writer, "Got %+v\n\n", input)
 }
 
 func (app *application) showPageHandler(writer http.ResponseWriter, request *http.Request) {
