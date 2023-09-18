@@ -44,3 +44,24 @@ Content-Type: application/json
 {
   "name": "foo2"
 }
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 400, "Response status is not 400");
+        client.assert(response.body.error === "body must only contain a single JSON value", "Response body is not 'Invalid JSON'");
+    });
+%}
+
+###
+POST http://localhost:{{port}}/v1/photos
+Content-Type: application/json
+
+{
+  "name": ""
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 400, "Response status is not 400");
+    });
+%}
