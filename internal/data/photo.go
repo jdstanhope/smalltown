@@ -2,6 +2,7 @@ package data
 
 import (
 	"database/sql"
+	"errors"
 	"github.com/jdstanhope/smalltown/internal/validator"
 	"time"
 )
@@ -36,7 +37,23 @@ func (model PhotoModel) Insert(photo *Photo) error {
 }
 
 func (model PhotoModel) Get(id int64) (*Photo, error) {
-	return nil, nil
+	if id < 1 {
+		return nil, ErrRecordNotFound
+	}
+
+	query := `SELECT id, created_at, name, version FROM photos WHERE id = $1`
+	var photo Photo
+
+	err := model.DB.QueryRow(query, id).Scan(&photo.ID, &photo.CreatedAt, &photo.Name, &photo.Version)
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrRecordNotFound
+		default:
+			return nil, err
+		}
+	}
+	return &photo, nil
 }
 
 func (model PhotoModel) Update(userID int64) error {

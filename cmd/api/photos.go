@@ -56,14 +56,16 @@ func (app *application) showPhotoHandler(writer http.ResponseWriter, request *ht
 		return
 	}
 
-	photo := data.Photo{
-		ID:         id,
-		CreatedAt:  time.Now(),
-		Name:       "A cat",
-		StorageURL: "https://placekitten.com/320/320?image=5",
-		UserID:     1,
+	photo, err := app.models.Photos.Get(id)
+	if err != nil {
+		switch {
+		case err == data.ErrRecordNotFound:
+			app.notFoundResponse(writer, request)
+		default:
+			app.serverErrorResponse(writer, request, err)
+		}
+		return
 	}
-
 	err = app.writeJSON(writer, http.StatusOK, photo, "photo", nil)
 	if err != nil {
 		app.serverErrorResponse(writer, request, err)

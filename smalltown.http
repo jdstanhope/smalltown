@@ -11,7 +11,7 @@ GET http://localhost:{{port}}/v1/pages/12
 GET http://localhost:{{port}}/v1/pages/foobar
 
 ###
-GET http://localhost:{{port}}/v1/photos/1
+GET http://localhost:{{port}}/v1/photos/2
 
 ###
 PUT http://localhost:{{port}}/v1/photos/1
