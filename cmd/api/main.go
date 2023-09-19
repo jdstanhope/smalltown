@@ -58,7 +58,7 @@ func main() {
 	flag.StringVar(&cfg.db.dsn, "db-dsn", os.Getenv("SMALLTOWN_DB_DSN"), "PostgresSQL DSN")
 	flag.IntVar(&cfg.db.maxOpenConns, "db-max-open-conns", 25, "PostgresSQL max open connections")
 	flag.IntVar(&cfg.db.maxIdleConns, "db-max-idle-conns", 25, "PostgresSQL max idle connections")
-	flag.DurationVar(&cfg.db.maxIdleTime, "db-max-idle-conns", 5, "PostgresSQL max idle duration")
+	flag.DurationVar(&cfg.db.maxIdleTime, "db-max-idle-time", 15*time.Minute, "PostgresSQL max idle duration")
 	flag.Parse()
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
