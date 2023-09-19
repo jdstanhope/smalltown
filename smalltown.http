@@ -57,11 +57,11 @@ POST http://localhost:{{port}}/v1/photos
 Content-Type: application/json
 
 {
-  "name": ""
+  "name": "A big cat"
 }
 
 > {%
     client.test("Request executed successfully", function() {
-        client.assert(response.status === 400, "Response status is not 400");
+        client.assert(response.status === 200, "Response status is not 400");
     });
 %}

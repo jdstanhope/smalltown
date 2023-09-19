@@ -10,19 +10,20 @@ import (
 
 func (app *application) createPhotoHandler(writer http.ResponseWriter, request *http.Request) {
 	var input struct {
-		Comment string `json:"comment"`
+		Name string `json:"name"`
 	}
-
+	// read input json
 	err := app.readJSON(writer, request, &input)
 	if err != nil {
 		app.badRequestResponse(writer, request, err)
 		return
 	}
 
+	// convert to model to validate
 	photo := &data.Photo{
 		ID:         1,
 		CreatedAt:  time.Now(),
-		Comment:    input.Comment,
+		Name:       input.Name,
 		StorageURL: "https://placekitten.com/320/320?image=5",
 		UserID:     1,
 	}
@@ -32,7 +33,20 @@ func (app *application) createPhotoHandler(writer http.ResponseWriter, request *
 		return
 	}
 
-	_, _ = fmt.Fprintf(writer, "Got %+v\n\n", input)
+	// insert into models db
+	err = app.models.Photos.Insert(photo)
+	if err != nil {
+		app.serverErrorResponse(writer, request, err)
+		return
+	}
+	headers := make(http.Header)
+	headers.Set("Location", fmt.Sprintf("/v1/photos/%d", photo.ID))
+
+	// write response
+	err = app.writeJSON(writer, http.StatusCreated, photo, "photo", headers)
+	if err != nil {
+		app.serverErrorResponse(writer, request, err)
+	}
 }
 
 func (app *application) showPhotoHandler(writer http.ResponseWriter, request *http.Request) {
@@ -45,7 +59,7 @@ func (app *application) showPhotoHandler(writer http.ResponseWriter, request *ht
 	photo := data.Photo{
 		ID:         id,
 		CreatedAt:  time.Now(),
-		Comment:    "A cat",
+		Name:       "A cat",
 		StorageURL: "https://placekitten.com/320/320?image=5",
 		UserID:     1,
 	}
