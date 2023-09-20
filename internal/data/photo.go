@@ -56,8 +56,16 @@ func (model PhotoModel) Get(id int64) (*Photo, error) {
 	return &photo, nil
 }
 
-func (model PhotoModel) Update(userID int64) error {
-	return nil
+func (model PhotoModel) Update(photo *Photo) error {
+	query := `
+		UPDATE photos 
+		SET name = $1, version = version + 1 
+		WHERE id = $2 
+		RETURNING version`
+
+	args := []any{photo.Name, photo.ID}
+
+	return model.DB.QueryRow(query, args...).Scan(&photo.Version)
 }
 
 func (model PhotoModel) Delete(userID int64) error {

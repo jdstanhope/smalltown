@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/jdstanhope/smalltown/internal/data"
 	"github.com/jdstanhope/smalltown/internal/validator"
@@ -69,5 +70,52 @@ func (app *application) showPhotoHandler(writer http.ResponseWriter, request *ht
 	err = app.writeJSON(writer, http.StatusOK, photo, "photo", nil)
 	if err != nil {
 		app.serverErrorResponse(writer, request, err)
+	}
+}
+
+func (app *application) updatePhotoHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := app.readIDParam(r)
+	if err != nil {
+		app.notFoundResponse(w, r)
+		return
+	}
+
+	photo, err := app.models.Photos.Get(id)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			app.notFoundResponse(w, r)
+		default:
+			app.serverErrorResponse(w, r, err)
+		}
+	}
+
+	var input struct {
+		Name string `json:"name"`
+	}
+
+	err = app.readJSON(w, r, &input)
+	if err != nil {
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	photo.Name = input.Name
+
+	v := validator.New()
+	if data.ValidatePhoto(v, photo); !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	err = app.models.Photos.Update(photo)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+		return
+	}
+
+	err = app.writeJSON(w, http.StatusOK, photo, "photo", nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
 	}
 }

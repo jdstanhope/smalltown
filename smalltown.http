@@ -65,3 +65,31 @@ Content-Type: application/json
         client.assert(response.status === 200, "Response status is not 400");
     });
 %}
+
+###
+POST http://localhost:{{port}}/v1/photos
+Content-Type: application/json
+
+{
+  "name": "A small cat"
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 400");
+    });
+%}
+
+###
+PUT http://localhost:{{port}}/v1/photos/3
+Content-Type: application/json
+
+{
+  "name": "This is an update"
+}
+
+> {%
+    client.test("Request executed successfully", function() {
+        client.assert(response.status === 200, "Response status is not 400");
+    });
+%}
